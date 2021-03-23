@@ -5,10 +5,16 @@ spring:
       suffix: .jsp
 
   datasource:
-      continue-on-error: true
-      hikari:
-        jdbc-url: jdbc:h2:tcp://localhost:9092/mem:testdb
-        driver-class-name: org.h2.Driver
+    continue-on-error: true
+#    url: jdbc:h2:file:~/data/h2/testdb;MODE=MySQL
+#    platform: h2
+#    username: sa
+#    password:
+#    driverClassName: org.h2.Driver
+    hikari:
+      jdbc-url: jdbc:h2:tcp://localhost:9092/./testdb
+      # jdbc-url: jdbc:h2:file:./testdb
+      driver-class-name: org.h2.Driver
       username: sa
       password:
 
@@ -16,7 +22,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       use-new-id-generator-mappings: false

@@ -15,7 +15,7 @@ public class UserApiController {
     private UserRepository userRepository;
 
     @Transactional
-    @GetMapping("/api/getTest")
+    @GetMapping("/api/getUsers")
     public List<User> getUsers() {
         return userRepository.findAll();
     }

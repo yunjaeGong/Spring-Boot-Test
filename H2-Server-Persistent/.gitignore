@@ -38,3 +38,7 @@ out/
 
 ### h2 ###
 *.db
+
+### Mac ###
+.DS_Store
+../.DS_Store

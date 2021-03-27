@@ -20,23 +20,23 @@ public class Reply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int parent_id;
+    private int parentId;
 
     @Lob
     @Column(nullable = false)
     private String content;
 
     @ManyToOne // 여러 답글 > 게시글
-    @JoinColumn(name = "board_id", referencedColumnName="id")
+    @JoinColumn(name = "boardId", referencedColumnName="id")
     private Board board;
 
     @ManyToOne // 여러 답글 > 유저
-    @JoinColumn(name = "user_id", referencedColumnName="id")
+    @JoinColumn(name = "userId", referencedColumnName="id")
     private User user;
 
-    private int depth;
+    private int depth; // 댓글 시작점 깊이
 
-    private int rank;
+    private int rootId; // root번 댓글의 대댓글들
 
     @CreationTimestamp
     private Timestamp createDate;

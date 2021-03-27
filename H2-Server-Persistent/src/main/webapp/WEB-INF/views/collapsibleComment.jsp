@@ -1,0 +1,195 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Yunjae's Blog</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%-- Bootstrap4 CDN --%>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <%-- summernote --%>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
+</head>
+<body>
+
+<style>
+    body {
+        background: #eee
+    }
+
+    .date {
+        font-size: 11px
+    }
+
+    .comment-text {
+        font-size: 14px
+    }
+
+    .fs-12 {
+        font-size: 12px
+    }
+
+    .fs-6 {
+        font-size: 16px
+    }
+
+    .shadow-none {
+        box-shadow: none
+    }
+
+    .name {
+        color: #007bff
+    }
+
+    .cursor:hover {
+        color: blue
+    }
+
+    .cursor {
+        cursor: pointer
+    }
+
+    .textarea {
+        resize: none
+    }
+
+    .fa-facebook {
+        color: #3b5999
+    }
+
+    .fa-twitter {
+        color: #55acee
+    }
+
+    .fa-linkedin {
+        color: #0077B5
+    }
+
+    .fa-instagram {
+        color: #e4405f
+    }
+
+    .fa-dribbble {
+        color: #ea4c89
+    }
+
+    .fa-pinterest {
+        color: #bd081c
+    }
+
+    .fa {
+        cursor: pointer
+    }
+</style>
+
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+    <a class="navbar-brand" href="/">Yunjae's Blog</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    </div>
+</nav>
+<br />
+
+<div class="container">
+    <div>
+        글번호: <span id="id"><i>${board.id}</i></span>
+        작성자: <span><i>${board.user.username}</i></span>
+    </div>
+    <br/>
+
+    <div>
+        <h3>${board.title}</h3>
+    </div>
+    <br/>
+
+    <div>
+        <p><strong style="color: dimgray; font-family: Verdana; font-size: large">Content:</strong></p>
+        <hr/>
+        <div>${board.content}</div>
+    </div>
+    <br/><br/>
+
+
+    <%-- 돌아가기 글 삭제, 수정 --%>
+
+    <button class="btn btn-secondary" onclick="history.back()">돌아가기</button>
+    <%-- <c:if test="${board.user.id == principal.user.id}"> --%>
+    <button id="btn-delete" class="btn btn-danger">삭제</button>
+    <a href="/board/${board.id}/updateForm" class="btn btn-warning">수정</a>
+    <%-- </c:if> --%>
+    <br/><br/>
+
+    <%-- 댓글 작성 --%>
+
+    <%--<div>
+        <div class="card mb-2">
+
+            <input type="hidden" id="boardId" value="${board.id}"/>
+            <input type="hidden" id="userId" value="${principal.user.id}"/>
+
+            <div class="card-header d-flex align-items-center">
+                <p class="d-flex align-items-center"><h5 style="color: dimgray;font-size: 16px;line-height: 1;margin: 0 10px;">Reply</h5></p>
+            </div>
+            <div class="form-inline my-2">
+                <label for="replyId"></label>
+                <input type="text" class="form-control ml-2" placeholder="Id" id="replyId">
+                <label for="replyPassword"></label>
+                <input type="text" class="form-control ml-2" placeholder="Password" id="replyPassword">
+            </div>
+
+            <div><textarea class="form-control px-2" id="replyContent" rows="3"></textarea></div>
+            <div class="card-footer bg-white p-2">
+                <a id="btn-reply" type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Register</a>
+                &lt;%&ndash;on click -> text area dropdown&ndash;%&gt;
+            </div>
+        </div>
+    </div>--%>
+    <c:forEach var="reply" items="${board.replies}">
+    <div class="d-flex flex-flow row">
+        <div class="col-lg-8">
+            <div class="d-flex flex-column comment-section mb-2" id="myGroup">
+                <div class="bg-white p-2">
+                    <div class="d-flex flex-row user-info">
+
+                        <div class="form-inline my-2">
+                            <label for="replyId"></label>
+                            <input type="text" class="form-control ml-2" placeholder="Id" id="replyId">
+                            <label for="replyPassword"></label>
+                            <input type="text" class="form-control ml-2" placeholder="Password" id="replyPassword">
+                        </div>
+                        <%--<div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">Marry Andrews</span><span class="date text-black-50">Shared publicly - Jan 2020</span></div>--%>
+                    </div>
+                    <div class="mt-2 mx-2">
+                        <%--TODO: reply projection--%>
+                        <p class="comment-text">${reply.content}</p>
+                    </div>
+                </div>
+                <div class="bg-light p-2">
+                    <div class="d-flex fs-12">
+                        <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-1" href="#collapse-1"><button class="btn btn-primary btn-sm ml-2">Reply</button></div>
+                    </div>
+                </div>
+                <div id="collapse-1" class="bg-light p-2 collapse" data-parent="#myGroup">
+                    <div class="d-flex flex-row align-items-start"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div><%--principal--%>
+                    <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" id="btn-nested-reply-save" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                    <%-- 여기 대댓글 추가--%>
+                </div>
+            </div>
+        </div>
+    </div>
+    </c:forEach>
+
+    <script src="/js/collapsibleComment.js"></script>
+
+</body>

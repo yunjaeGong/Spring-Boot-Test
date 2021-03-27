@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class BoardController {
@@ -16,6 +18,14 @@ public class BoardController {
     public String index(Model model) {
         model.addAttribute("board", boardService.getPost(1));
         return "boardReplyTest";
-//        return "main";
     }
+
+    @GetMapping("/replyTest1")
+    // https://bbbootstrap.com/snippets/bootstrap-collapsible-like-comment-and-share-section-43201372
+    public String replyTest1(Model model) {
+        model.addAttribute("board", boardService.getPost(2));
+        return "collapsibleComment";
+    }
+
+
 }

@@ -235,7 +235,8 @@
 
             <div><textarea class="form-control px-2" id="replyContent" rows="3"></textarea></div>
             <div class="card-footer bg-white p-2">
-                <button id="btn-reply" type="button" class="btn btn-secondary btn-sm">Register</button>
+                <a id="btn-reply" type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Register</a>
+                <%--on click -> text area dropdown--%>
             </div>
         </div>
 
@@ -260,6 +261,7 @@
                             </div>
                             <div class="card-footer bg-white p-2">
                                 <button id="btn-nested-reply" type="button" class="btn btn-secondary btn-sm">Reply</button>
+                                <a id="btn-reply" type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Reply</a>
                                 <small class="text-muted ml-2">Last updated 3 mins ago</small > <%--TODO: 업데이트된 시간{x mins ago, x days 7], x week, a year, ""}--%>
                                 <span class="float-right">
                                     <button class="btn btn-danger btn-sm">삭제</button>
@@ -267,8 +269,18 @@
                                     <%--<c:choose><c:when test="${board.user.id == principal.user.id}">
                                         <button onclick="index.replyDelete(${board.id},${reply.id}" class="btn btn-danger btn-sm">삭제</button>
                                         <button onclick="index.replyDelete(${board.id},${reply.id}" class="btn btn-warning btn-sm">수정</button>
+                                        <button onclick="index.replyDelete(${board.id},${reply.id}" class="btn btn-warning btn-sm">수정</button>
                                     </c:when></c:choose>--%>
+
+                                        <%--on click -> text area dropdown--%>
+                                        <%--principal 존재할 때, 아닐 때 ajax 요청 구분 필요--%>
                                 </span>
+                                <div class="collapse" id="collapseExample">
+                                    <div class="card card-body">
+                                       ${reply.content}
+                                    </div>
+                                    <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -75,7 +75,8 @@ let index = {
         let data = {
             userId: $("#userId").val(),
             boardId: $("#boardId").val(),
-            content: $("#replyContent").val()
+            content: $("#replyContent").val(),
+            parentId: $("#id").val()
         };
 
         console.log(data);

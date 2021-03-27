@@ -31,7 +31,7 @@ public class Board {
     private int count; // 조회수
 
     @ManyToOne(fetch = FetchType.EAGER) // 다대 일 관계(게시글 > 유저), Board 테이블 선택하면 user 정보는 바로 join 해서 가져옴
-    @JoinColumn(name = "user_id", referencedColumnName="id") // 작성한 user의 Id 값, table의 칼럼(FK)로 생성
+    @JoinColumn(name = "userId", referencedColumnName="id") // 작성한 user의 Id 값, table의 칼럼(FK)로 생성
     private User user; // BD는 오프젝트 저장 불가. (원래는 FK 사용), 자바는 오브젝트를 저장할 수 있다.
     // sql에서는 userId integer로 생성
 

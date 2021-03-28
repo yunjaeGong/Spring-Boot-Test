@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 public class BoardService {
@@ -23,8 +25,7 @@ public class BoardService {
     @Autowired
     private BoardRepository boardRepository;
 
-    @Autowired
-    private NestedReplyRepository replyRepository;
+
 
     @Transactional(readOnly = true)
     public Board getPost(int id) {
@@ -33,62 +34,5 @@ public class BoardService {
         });
     }
 
-    @Transactional
-    public void saveReply(ReplySaveRequestDto replySaveRequestDto) {
-        // 본 댓글용
-        User user = userRepository.findById(replySaveRequestDto.getUserId()).orElseThrow(() -> {
-            return new IllegalIdentifierException("댓글 쓰기 실패: 유저 아이디를 찾을 수 없습니다.");
-        });
 
-        Board board = boardRepository.findById(replySaveRequestDto.getBoardId()).orElseThrow(() -> {
-            return new IllegalIdentifierException("댓글 쓰기 실패: 게시글 아이디를 찾을 수 없습니다.");
-        });
-
-        Reply reply = Reply.builder()
-                .user(user)
-                .board(board)
-                .content(replySaveRequestDto.getContent())
-                .parentId(0)
-                .depth(0)
-                .rootId(0)
-                .build();
-
-        replyRepository.save(reply);
-    }
-
-    @Transactional
-    public void insertReply(ReplySaveRequestDto replySaveRequestDto) {
-        // 본 댓글용
-        User user = userRepository.findById(replySaveRequestDto.getUserId()).orElseThrow(() -> {
-            return new IllegalIdentifierException("댓글 쓰기 실패: 유저 아이디를 찾을 수 없습니다.");
-        });
-
-        Board board = boardRepository.findById(replySaveRequestDto.getBoardId()).orElseThrow(() -> {
-            return new IllegalIdentifierException("댓글 쓰기 실패: 게시글 아이디를 찾을 수 없습니다.");
-        });
-
-        Reply parentReply = replyRepository.findById(replySaveRequestDto.getParentId()).orElseThrow(() -> {
-            return new IllegalIdentifierException("댓글 쓰기 실패: 원 댓글의 아이디를 찾을 수 없습니다.");
-        });
-        /*
-         * root는 (존재하면) 그대로
-         * parentId = id
-         * 대댓글이면 order number는 +1
-         * */
-        Reply reply = Reply.builder()
-                .user(user)
-                .board(board)
-                .content(replySaveRequestDto.getContent())
-                .parentId(0)
-                .depth(0)
-                .rootId(0)
-                .build();
-
-        replyRepository.save(reply);
-    }
-
-    @Transactional
-    public void deleteReply(int id) {
-        replyRepository.deleteById(id);
-    }
 }

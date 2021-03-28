@@ -6,25 +6,23 @@ let collapsibleComment = {
         $("#btn-reply-save").on("click", ()=> {
             this.saveReply();
         });
-        $("#btn-nested-reply-save").on("click", ()=> {
-            this.saveNestedReply();
-        });
 
     },
-    saveReply: function () {
+    saveReply: function (userId, boardId, replyContent) {
         let data = {
             userId: $("#userId").val(),
             boardId: $("#boardId").val(),
             content: $("#replyContent").val(),
-            parentId: $("#id").val(),
-            //  nested의 경우 root id필요
+            parentId: 0,
+            depth: 0,
+            rootId: 0,
         };
 
         console.log(data);
 
         $.ajax({
             type: "POST",
-            url: `/api/board/${data.boardId}/reply`,
+            url: `/api/board/reply`,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             data_type: "json"
@@ -35,25 +33,29 @@ let collapsibleComment = {
             alert(JSON.stringify(error));
         });
     },
-    saveNestedReply: function () {
+    saveNestedReply: function (userId, boardId, replyContent, rootId, parentId) {
+        /*let data = {
+            userId, boardId, replyContent, rootId
+        };*/
         let data = {
             userId: $("#userId").val(),
             boardId: $("#boardId").val(),
             content: $("#replyContent").val(),
-            parentId: $("#id").val(),
-            //  nested의 경우 root id필요
+            parentId: parentId,
+            depth: 1,
+            rootId: parentId,
         };
-
+        alert(data);
         console.log(data);
 
         $.ajax({
             type: "POST",
-            url: `/api/board/${data.boardId}/reply`,
+            url: `/api/board/nestedReply`,
             data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
             data_type: "json"
         }).done(function (resp) {
-            alert("댓글 쓰기가 완료되었습니다.");
+            alert("대댓글 쓰기가 완료되었습니다.");
             location.href = `/replyTest1`;
         }).fail(function (error) {
             alert(JSON.stringify(error));

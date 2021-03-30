@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.NestedReplySaveDto;
 import com.example.demo.dto.ReplySaveRequestDto;
 import com.example.demo.model.Board;
 import com.example.demo.model.Reply;
@@ -50,17 +51,14 @@ public class ReplyService {
     }
 
     @Transactional
-    public void insertReply(ReplySaveRequestDto replySaveRequestDto) {
+    public void insertReply(NestedReplySaveDto nestedReplySaveDto) {
         // 본 댓글용
-        User user = userRepository.findById(replySaveRequestDto.getUserId()).orElseThrow(() -> {
-            return new IllegalIdentifierException("댓글 쓰기 실패: 유저 아이디를 찾을 수 없습니다.");
-        });
 
-        Board board = boardRepository.findById(replySaveRequestDto.getBoardId()).orElseThrow(() -> {
+        Board board = boardRepository.findById(nestedReplySaveDto.getBoardId()).orElseThrow(() -> {
             return new IllegalIdentifierException("댓글 쓰기 실패: 게시글 아이디를 찾을 수 없습니다.");
         });
 
-        Reply parentReply = replyRepository.findById(replySaveRequestDto.getParentId()).orElseThrow(() -> {
+        Reply parentReply = replyRepository.findById(nestedReplySaveDto.getParentId()).orElseThrow(() -> {
             return new IllegalIdentifierException("댓글 쓰기 실패: 원 댓글의 아이디를 찾을 수 없습니다.");
         });
         /*
@@ -68,15 +66,23 @@ public class ReplyService {
          * parentId = id
          * 대댓글이면 order number는 +1
          * */
+
+        User user = userRepository.findByUserId(nestedReplySaveDto.getUserId());
+        if(user == null) {
+            user = new User();
+            user.setUserId(nestedReplySaveDto.getUserId()); // anonymous user
+            userRepository.save(user);
+        }
+
         Reply reply = Reply.builder()
                 .user(user)
                 .board(board)
-                .content(replySaveRequestDto.getContent())
+                .content(nestedReplySaveDto.getContent())
                 .parentId(0)
                 .depth(0)
                 .rootId(0)
                 .build();
-
+// TODO: deoth 0, rootid 0 수정
         replyRepository.save(reply);
     }
 

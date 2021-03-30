@@ -1,6 +1,7 @@
 package com.example.demo.controller.api;
 
 import com.example.demo.ResponseDto;
+import com.example.demo.dto.NestedReplySaveDto;
 import com.example.demo.dto.ReplySaveRequestDto;
 import com.example.demo.service.BoardService;
 import com.example.demo.service.ReplyService;
@@ -24,8 +25,8 @@ public class BoardApiController {
     }
 
     @PostMapping("/api/board/nestedReply") // 댓글 작성 Request 주소
-    public ResponseDto<Integer> insertReply(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
-        replyService.insertReply(replySaveRequestDto);
+    public ResponseDto<Integer> insertReply(@RequestBody NestedReplySaveDto nestedReplySaveDto) {
+        replyService.insertReply(nestedReplySaveDto);
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
 

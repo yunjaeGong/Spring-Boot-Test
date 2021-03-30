@@ -6,7 +6,6 @@ let collapsibleComment = {
         $("#btn-reply-save").on("click", ()=> {
             this.saveReply();
         });
-
     },
     saveReply: function (userId, boardId, replyContent) {
         let data = {
@@ -33,20 +32,18 @@ let collapsibleComment = {
             alert(JSON.stringify(error));
         });
     },
-    saveNestedReply: function (userId, boardId, replyContent, rootId, parentId) {
-        /*let data = {
-            userId, boardId, replyContent, rootId
-        };*/
+    saveNestedReply: function (rootId) {
         let data = {
-            userId: $("#userId").val(),
+            userId: $("#nestedReplyId-" + rootId).val(),
             boardId: $("#boardId").val(),
-            content: $("#replyContent").val(),
-            parentId: parentId,
+            content: $("#nestedReplyContent-" + rootId).val(),
+            parentId: rootId,
             depth: 1,
-            rootId: parentId,
+            rootId: rootId,
         };
         alert(data);
         console.log(data);
+
 
         $.ajax({
             type: "POST",

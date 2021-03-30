@@ -126,6 +126,7 @@
     </div>
     <br/><br/>
 
+    <input type="hidden" id="boardId" value="${board.id}"/>
 
     <%-- 돌아가기 글 삭제, 수정 --%>
 
@@ -167,16 +168,16 @@
             <div class="d-flex flex-column comment-section mb-2" id="myGroup">
                 <div class="bg-white p-2">
                     <div class="d-flex flex-row user-info">
-                        <div class="form-inline my-2">
+                        <%--<div class="form-inline my-2">
                             <label for="replyId"></label>
                             <input type="text" class="form-control ml-2" placeholder="Id" id="replyId">
                             <label for="replyPassword"></label>
                             <input type="text" class="form-control ml-2" placeholder="Password" id="replyPassword">
-                        </div>
+                        </div>--%>
+                        <span class="fs-16">${reply.user.username}</span>
                             <%--<div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">Marry Andrews</span><span class="date text-black-50">Shared publicly - Jan 2020</span></div>--%>
                     </div>
                     <div class="mt-2 mx-2">
-                            <%--TODO: reply projection--%>
                         <p class="comment-text">${reply.content}</p>
                     </div>
                 </div>
@@ -185,8 +186,10 @@
                         <div class="like p-2 cursor action-collapse" data-toggle="collapse" aria-expanded="true" aria-controls="collapse-${rootStatus.count}" href="#collapse-${rootStatus.count}"><button class="btn btn-primary btn-sm ml-2">Reply</button></div>
                     </div>
                 </div>
+
+                <%-- Collapsible --%>
                 <div id="collapse-${rootStatus.count}" class="bg-light p-2 collapse">
-                        <%-- 여기 대댓글 추가--%>
+                        <%-- nested replies --%>
                     <c:forEach var="nestedReply" items="${nestedReplies}" varStatus="status">
                         <c:if test="${nestedReply.parentId eq reply.id}">
                             <div class="bg-white n-reply">
@@ -200,8 +203,31 @@
                             </div>
                         </c:if>
                     </c:forEach>
-                            <div class="d-flex flex-row align-items-start"><textarea class="form-control ml-1 shadow-none textarea"></textarea></div><%--principal--%>
-                            <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" id="btn-nested-reply-save" type="button">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+
+                        <%--nested reply post--%>
+                        <%--principal--%>
+                            <div class="d-flex flex-row user-info">
+                                <div class="form-inline my-2">
+                                    <label for="nestedReplyId-${reply.id}"></label>
+                                    <input type="text" class="form-control ml-2" placeholder="Id" id="nestedReplyId-${reply.id}">
+                                    <label for="nestedReplyPassword-${reply.id}"></label>
+                                    <input type="text" class="form-control ml-2" placeholder="Password" id="nestedReplyPassword-${reply.id}">
+                                </div>
+                            </div>
+
+                    <div class="d-flex flex-row align-items-start">
+                        <label>
+                            <textarea class="form-control ml-1 shadow-none textarea" id="nestedReplyContent-${reply.id}"></textarea>
+                        </label>
+                    </div>
+
+                    <div class="mt-2 text-right">
+                        <button class="btn btn-primary btn-sm shadow-none" id="btn-nested-reply-save-${reply.id}"
+                                type="button" onclick="collapsibleComment.saveNestedReply(${reply.id})">Post comment
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

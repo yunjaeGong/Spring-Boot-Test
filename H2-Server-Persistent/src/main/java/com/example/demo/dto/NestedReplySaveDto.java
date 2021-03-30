@@ -7,12 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReplySaveRequestDto {
-    private int userId;
+public class NestedReplySaveDto {
+    private String userId;
     private int boardId;
     private String content;
     private int parentId;
-    private int depth;
     private int rootId;
-
 }

@@ -78,9 +78,9 @@ public class ReplyService {
                 .user(user)
                 .board(board)
                 .content(nestedReplySaveDto.getContent())
-                .parentId(0)
-                .depth(0)
-                .rootId(0)
+                .parentId(nestedReplySaveDto.getParentId())
+                .depth(1) // TODO: depth 받아오기
+                .rootId(nestedReplySaveDto.getRootId())
                 .build();
 // TODO: deoth 0, rootid 0 수정
         replyRepository.save(reply);

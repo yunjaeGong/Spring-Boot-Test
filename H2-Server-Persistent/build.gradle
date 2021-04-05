@@ -30,8 +30,11 @@ dependencies {
 	compile "javax.servlet:jstl:1.2"
 	runtimeOnly 'org.apache.tomcat.embed:tomcat-embed-jasper'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.security:spring-security-taglibs'
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation "org.springframework.boot:spring-boot-starter-web"
 }
 
 test {

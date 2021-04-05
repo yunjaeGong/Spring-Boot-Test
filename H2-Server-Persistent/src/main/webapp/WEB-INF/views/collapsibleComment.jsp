@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -107,11 +108,16 @@
 </nav>
 <br />
 
+<security:authorize access="isAuthenticated()">
+    authenticated as <security:authentication property="principal.userId" />
+</security:authorize>
+
 <div class="container-xl">
     <div>
         글번호: <span id="id"><i>${board.id}</i></span>
-        작성자: <span><i>${board.user.username}</i></span>
+        작성자: <span><i>${board.user.userId}</i></span>
     </div>
+    <div>principal: <span>${principal.userId}</span></div>
     <br/>
 
     <div>
@@ -174,7 +180,7 @@
                             <label for="replyPassword"></label>
                             <input type="text" class="form-control ml-2" placeholder="Password" id="replyPassword">
                         </div>--%>
-                        <span class="fs-16">${reply.user.username}</span>
+                        <span class="fs-16">${reply.user.userId}</span>
                             <%--<div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">Marry Andrews</span><span class="date text-black-50">Shared publicly - Jan 2020</span></div>--%>
                     </div>
                     <div class="mt-2 mx-2">
@@ -194,7 +200,7 @@
                         <c:if test="${nestedReply.parentId eq reply.id}">
                             <div class="bg-white n-reply">
                                 <div class="d-flex flex-row user-info">
-                                    <span class="fs-16">${nestedReply.user.username}</span>
+                                    <span class="fs-16">${nestedReply.user.userId}</span>
                                         <%--<div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">Marry Andrews</span><span class="date text-black-50">Shared publicly - Jan 2020</span></div>--%>
                                 </div>
                                 <div class="mt-2 mx-2">

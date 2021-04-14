@@ -9,12 +9,15 @@ package com.example.security.config.auth;
 
 import com.example.security.model.User;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 @AllArgsConstructor
+@Data
 public class PrincipalDetails implements UserDetails {
 
     private User user;
@@ -22,14 +25,17 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 해당 유저의 권한 반환
-        Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(new GrantedAuthority() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        user.getRoleList().forEach(r->{
+            authorities.add(()->r);
+        });
+        /*authorities.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
                 return user.getRole();
             }
-        });
-        return collection;
+        });*/
+        return authorities;
     }
 
     @Override

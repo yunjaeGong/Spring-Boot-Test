@@ -1,10 +1,9 @@
 package com.example.security.config;
 
-import com.example.security.filter.MyFilter3;
 import com.example.security.jwt.JwtAuthenticationFilter;
+import com.example.security.jwt.JwtAuthorizationFilter;
+import com.example.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -15,9 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -26,8 +22,9 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private final CorsFilter corsFilter;
+
+    private final UserRepository userRepository;
 
     @Bean
     public PasswordEncoder encoder() {
@@ -50,13 +47,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .formLogin().disable()
                     .httpBasic().disable()
                     .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                     .addFilter(corsFilter) // @CrossOrigin(인증 필요x 경우), 시큐리티 필터에 등록(인증O)
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/api/v1/user/**").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-                    .antMatchers("/api/v1/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-                    .antMatchers("/api/v1/admin/**").access("hasRole('ROLE_ADMIN')")
+                    .antMatchers("/api/user/**").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+                    .antMatchers("/api/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+                    .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
                     .anyRequest().permitAll();
         }
     }

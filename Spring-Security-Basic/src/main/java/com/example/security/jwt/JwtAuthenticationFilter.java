@@ -3,12 +3,17 @@ package com.example.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.security.config.auth.PrincipalDetails;
+import com.example.security.dto.response.JwtResponseDto;
+import com.example.security.model.RefreshToken;
 import com.example.security.model.User;
+import com.example.security.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -17,15 +22,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 // Spring Security에 UsernamePasswordAuthenticationFilter존재
 // @Order(2)에서 /login 요청 시 username, password 전송하면 UsernamePasswordAuthenticationFilter가 자동으로 동작
 // @Order(1) entry point에서는 이 필터가 동작(formLogin 허용 x)
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
         this.setFilterProcessesUrl("/api/login");
     }
 
@@ -68,18 +77,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     // attemptAuthentication에서 로그인 시도 후 성공하면 successfulAuthentication 실행됨
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        ObjectMapper om = new ObjectMapper();
+
         // 4. JWT 토근을 담아 응답
         System.out.println("successfulAuthentication: 인증 완료");
         PrincipalDetails principalDetails = (PrincipalDetails)authResult.getPrincipal();
 
-        String jwtToken = JWT.create()
-                .withSubject("testToken")
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-                .withClaim("id", principalDetails.getUser().getId())
-                .withClaim("username", principalDetails.getUser().getUsername())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+        // accessToken 생성
+        String jwtToken = jwtService.generateToken(principalDetails.getUser());
 
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.EXPIRATION_TIME + jwtToken);
+        // refreshToken 생성
+        RefreshToken refreshToken = jwtService.generateRefreshToken(principalDetails.getUser());
+
+
+        List<String> roles = principalDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+
         // jwt 토큰 포함한 헤더 사용자에게
+        // response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.EXPIRATION_TIME + jwtToken);
+
+        // token 포함한 response 객체
+        String responseJson = om.writeValueAsString(new JwtResponseDto(jwtToken, refreshToken.getToken(), principalDetails.getUser().getId(),
+                principalDetails.getUsername(), principalDetails.getUser().getEmail(), roles));
+
+        // response 객체에 JwtResponseDto Json 전달
+        response.getWriter().write(responseJson);
     }
 }

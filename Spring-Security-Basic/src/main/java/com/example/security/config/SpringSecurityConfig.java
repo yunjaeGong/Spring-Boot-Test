@@ -3,6 +3,7 @@ package com.example.security.config;
 import com.example.security.jwt.JwtAuthenticationFilter;
 import com.example.security.jwt.JwtAuthorizationFilter;
 import com.example.security.repository.UserRepository;
+import com.example.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserRepository userRepository;
 
+    private final JwtService jwtService;
+
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
@@ -46,12 +49,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatcher("/api/**")
                     .formLogin().disable()
                     .httpBasic().disable()
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtService))
                     .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                     .addFilter(corsFilter) // @CrossOrigin(인증 필요x 경우), 시큐리티 필터에 등록(인증O)
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
-                    .authorizeRequests()
+                    .authorizeRequests().antMatchers("/api/refreshToken").permitAll()
                     .antMatchers("/api/user/**").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                     .antMatchers("/api/manager/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                     .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")

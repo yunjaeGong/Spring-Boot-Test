@@ -145,29 +145,6 @@
 
     <%-- 댓글 작성 --%>
 
-    <%--<div>
-        <div class="card mb-2">
-
-            <input type="hidden" id="boardId" value="${board.id}"/>
-            <input type="hidden" id="userId" value="${principal.user.id}"/>
-
-            <div class="card-header d-flex align-items-center">
-                <p class="d-flex align-items-center"><h5 style="color: dimgray;font-size: 16px;line-height: 1;margin: 0 10px;">Reply</h5></p>
-            </div>
-            <div class="form-inline my-2">
-                <label for="replyId"></label>
-                <input type="text" class="form-control ml-2" placeholder="Id" id="replyId">
-                <label for="replyPassword"></label>
-                <input type="text" class="form-control ml-2" placeholder="Password" id="replyPassword">
-            </div>
-
-            <div><textarea class="form-control px-2" id="replyContent" rows="3"></textarea></div>
-            <div class="card-footer bg-white p-2">
-                <a id="btn-reply" type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">Register</a>
-                &lt;%&ndash;on click -> text area dropdown&ndash;%&gt;
-            </div>
-        </div>
-    </div>--%>
     <c:forEach var="reply" items="${rootReplies}" varStatus="rootStatus">
     <div class="d-flex flex-flow row">
         <div class="col-lg-10">
